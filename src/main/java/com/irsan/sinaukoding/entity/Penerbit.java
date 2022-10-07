@@ -5,23 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Anggota {
+public class Penerbit {
 
     @Id
-    @Column(name = "anggota_id")
-    private Long anggotaId;
-    private String nama;
-    @Column(name = "jenis_kelamin")
-    private String jenisKelamin;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "penerbit_id")
+    private Long penerbitId;
+    @Column(name = "nama_penerbit")
+    private String namaPenerbit;
     private String alamat;
     private String telp;
 
