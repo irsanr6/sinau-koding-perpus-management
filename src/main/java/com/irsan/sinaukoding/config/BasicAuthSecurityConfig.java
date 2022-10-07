@@ -1,6 +1,7 @@
 package com.irsan.sinaukoding.config;
 
 import com.irsan.sinaukoding.filter.JwtRequestFilter;
+import com.irsan.sinaukoding.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,9 +47,8 @@ public class BasicAuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        String[] pathArray = new String[]{"/api/v1/signup", "/api/v1/signin"};
         http.csrf().disable()
-                .authorizeRequests().antMatchers(pathArray).permitAll()
+                .authorizeRequests().antMatchers(Constant.AUTH_WHITELIST).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
