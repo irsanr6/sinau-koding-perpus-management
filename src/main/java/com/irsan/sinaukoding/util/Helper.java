@@ -1,5 +1,7 @@
 package com.irsan.sinaukoding.util;
 
+import org.springframework.data.domain.PageRequest;
+
 import java.util.Date;
 
 public class Helper {
@@ -13,6 +15,10 @@ public class Helper {
 //        target.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Asia/Jakarta")));
 //        log.info("currentDate {}", target.format(date));
         return date;
+    }
+
+    public static PageRequest getPageRequest(int pageNumber, int pageSize) {
+        return PageRequest.of(--pageNumber, pageSize);
     }
 
 }

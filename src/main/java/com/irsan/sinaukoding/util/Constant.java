@@ -6,6 +6,7 @@ public class Constant {
     public static final String ROLE_DEFAULT = "Anggota";
     public static final String TIMEZONE_INDONESIA = "Asia/Jakarta";
     public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String BASE_PATH = "/api/v1";
     public static final String[] AUTH_WHITELIST = {
             "/api/v1/signup",
             "/api/v1/signin",
