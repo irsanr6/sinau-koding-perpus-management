@@ -16,5 +16,10 @@ public class Constant {
             "/configuration/ui",
             "/swagger-ui/**",
     };
-
+    public static final int LONG_DAYS = 7;
+    public static final double DENDA = 1500;
+    public static final int BATAS_PEMINJAMAN = 3;
+    public static final int BATAS_BUKU = 1;
+    public static final String STATUS_PINJAM = "PINJAM";
+    public static final String STATUS_SELESAI = "SELESAI";
 }

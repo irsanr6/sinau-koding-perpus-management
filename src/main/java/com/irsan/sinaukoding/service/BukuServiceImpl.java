@@ -29,9 +29,9 @@ public class BukuServiceImpl implements BukuService {
 
     @Override
     public BaseResponse<?> getAllBuku(BukuLihatRequest lihatRequest) {
-        Pageable pageable = Helper.getPageRequest(lihatRequest.getPageIn(), lihatRequest.getLimit());
-        Page<Buku> bukuList = bukuRepository.findAll(findSpec(lihatRequest), pageable);
-        return BaseResponse.ok(bukuList);
+        Pageable pageable = Helper.getPageRequest(lihatRequest.getPageIn(), lihatRequest.getLimit(), "judulBuku");
+        Page<Buku> bukuPage = bukuRepository.findAll(findSpec(lihatRequest), pageable);
+        return BaseResponse.okPage(bukuPage.getContent(), bukuPage);
     }
 
     private Specification<Buku> findSpec(BukuLihatRequest lihatRequest) {

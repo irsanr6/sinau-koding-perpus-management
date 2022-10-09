@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Buku {
