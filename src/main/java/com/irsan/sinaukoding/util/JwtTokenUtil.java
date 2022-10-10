@@ -22,7 +22,7 @@ public class JwtTokenUtil implements Serializable {
     private ObjectMapper objectMapper;
 
     private static final long serialVersionUID = 7700785500455598524L;
-    public static final long JWT_TOKEN_VALIDITY = 24;
+    public static final long JWT_TOKEN_VALIDITY = 24 * 365;
     private static final String SECRET = "irsanramadhan";
 
     private String doGenerateToken(Map<String, Object> claims, UserData userData) {

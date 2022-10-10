@@ -5,6 +5,8 @@ import com.irsan.sinaukoding.service.UserDetailsPerpusServiceImpl;
 import com.irsan.sinaukoding.util.Constant;
 import com.irsan.sinaukoding.util.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -38,24 +41,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String strUrl = request.getRequestURL().toString();
         String requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (strUrl.contains("v2/api-docs") || strUrl.contains("swagger-resources") || strUrl.contains("swagger-ui")) {
-            logger.info("Your access swagger documentation");
+            log.info("Your access swagger documentation");
         } else {
-            if (requestTokenHeader != null) {
-                if (requestTokenHeader.startsWith("Bearer ")) {
-                    jwtToken = requestTokenHeader.replace("Bearer ", "");
+            if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+                jwtToken = requestTokenHeader.replace("Bearer ", "");
+                try {
                     userData = jwtTokenUtil.extractToken(jwtToken);
-                    try {
-                        username = userData.getUsername();
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Unable to get JWT Token");
-                    } catch (ExpiredJwtException e) {
-                        System.out.println("JWT Token has expired");
-                    }
-                } else {
-                    logger.warn("JWT Token does not begin with Bearer String");
+                    username = userData.getUsername();
+                } catch (IllegalArgumentException | ExpiredJwtException | SignatureException e) {
+                    log.error(e.getMessage());
                 }
             } else {
-                logger.warn("JWT Token is required");
+                log.error("Header is not set / can't find token");
             }
         }
 

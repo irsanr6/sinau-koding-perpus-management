@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public BaseResponse<?> authenticateUser(LoginRequest loginRequest) {
         getStringBaseResponse(loginRequest);
-        final UserPerpus userPerpus =userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail()).get();
+        final UserPerpus userPerpus = userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail()).get();
         UserData userData = UserData.builder()
                 .userId(userPerpus.getUserId())
                 .nama("Unknown")
@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
                         .email(userData.getEmail())
                         .role(userPerpus.getRole())
                         .build())
-                .token(token)
+                .token("Bearer " + token)
                 .build());
     }
 
