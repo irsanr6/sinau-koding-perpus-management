@@ -1,8 +1,10 @@
 package com.irsan.sinaukoding.service;
 
+import com.irsan.sinaukoding.entity.Buku;
 import com.irsan.sinaukoding.entity.Peminjaman;
 import com.irsan.sinaukoding.model.PeminjamanSimpanRequest;
 import com.irsan.sinaukoding.model.UserData;
+import com.irsan.sinaukoding.repository.BukuRepository;
 import com.irsan.sinaukoding.repository.PeminjamanRepository;
 import com.irsan.sinaukoding.util.BaseResponse;
 import com.irsan.sinaukoding.util.Constant;
@@ -10,14 +12,21 @@ import com.irsan.sinaukoding.util.Helper;
 import com.irsan.sinaukoding.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PeminjamanServiceImpl implements PeminjamanService {
 
     @Autowired
     private PeminjamanRepository peminjamanRepository;
+
+    @Autowired
+    private BukuRepository bukuRepository;
 
     @Override
     public BaseResponse<?> pinjamBuku(PeminjamanSimpanRequest pinjamRequest, HttpServletRequest httpServletRequest) {
@@ -50,7 +59,68 @@ public class PeminjamanServiceImpl implements PeminjamanService {
     }
 
     @Override
-    public BaseResponse<?> updatePinjamBuku(PeminjamanSimpanRequest pinjamRequest) {
-        return null;
+    public BaseResponse<?> trackPeminjamanSelesai(Long anggotaId) {
+        MultiValueMap<Long, String> multiValueMap = new LinkedMultiValueMap<>();
+        Map<Long, Object> resMap = new HashMap<>();
+        Set<Long> keySet = new HashSet<>();
+        List<Peminjaman> allById = peminjamanRepository.findAllByAnggotaIdAndStatus(anggotaId, Constant.STATUS_SELESAI);
+        if (Helper.isNullOrEmpty(allById)) {
+            multiValueMap.add(anggotaId, "Buku dengan status SELESAI tidak ada");
+        } else {
+            for (Peminjaman singleId : allById) {
+                multiValueMap.add(singleId.getAnggotaId(), getNamaBuku(singleId.getBukuId()));
+            }
+            keySet = multiValueMap.keySet();
+            for (Long key : keySet) {
+                resMap.put(key, arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
+            }
+        }
+        return BaseResponse.ok(resMap);
+    }
+
+    @Override
+    public BaseResponse<?> trackPeminjamanPinjam(Long anggotaId) {
+        MultiValueMap<Long, String> multiValueMap = new LinkedMultiValueMap<>();
+        Map<Long, Object> resMap = new HashMap<>();
+        Set<Long> keySet = new HashSet<>();
+        List<Peminjaman> allById = peminjamanRepository.findAllByAnggotaIdAndStatus(anggotaId, Constant.STATUS_PINJAM);
+        if (Helper.isNullOrEmpty(allById)) {
+            multiValueMap.add(anggotaId, "Buku dengan status PINJAM tidak ada");
+        } else {
+            for (Peminjaman singleId : allById) {
+                multiValueMap.add(singleId.getAnggotaId(), getNamaBuku(singleId.getBukuId()));
+            }
+            keySet = multiValueMap.keySet();
+            for (Long key : keySet) {
+                resMap.put(key, arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
+            }
+        }
+        return BaseResponse.ok(resMap);
+    }
+
+    @Override
+    public BaseResponse<?> trackPeminjaman() {
+        MultiValueMap<Long, String> multiValueMap = new LinkedMultiValueMap<>();
+        Map<Long, Object> resMap = new HashMap<>();
+        Set<Long> keySet = new HashSet<>();
+        List<Peminjaman> allPeminjaman = peminjamanRepository.findAll();
+        for (Peminjaman singlePeminjaman : allPeminjaman) {
+            multiValueMap.add(singlePeminjaman.getAnggotaId(), getNamaBuku(singlePeminjaman.getBukuId()));
+        }
+        keySet = multiValueMap.keySet();
+        for (Long key : keySet) {
+            resMap.put(key, arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
+        }
+        return BaseResponse.ok(resMap);
+    }
+
+    private String getNamaBuku(Long bukuId) {
+        Buku buku = Optional.of(bukuRepository.findById(bukuId)).get().orElseThrow();
+        return buku.getJudulBuku();
+    }
+
+    private String arrayToString(List<String> list) {
+        return list.stream().map(Object::toString)
+                .collect(Collectors.joining(", "));
     }
 }

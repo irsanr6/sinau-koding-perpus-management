@@ -7,11 +7,9 @@ import com.irsan.sinaukoding.util.BaseResponse;
 import com.irsan.sinaukoding.util.Constant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,11 +29,25 @@ public class PeminjamanController {
         return peminjamanService.pinjamBuku(pinjamRequest, httpServletRequest);
     }
 
-    @ApiOperation("Update Peminjaman Buku")
+    @ApiOperation("Track Peminjaman SELESAI")
     @ApiParamAuth
-    @PostMapping("/updatePinjam")
-    public BaseResponse<?> updatePinjamBuku(@RequestBody PeminjamanSimpanRequest pinjamRequest) {
-        return peminjamanService.updatePinjamBuku(pinjamRequest);
+    @GetMapping("/trackPeminjamanSelesai")
+    public BaseResponse<?> trackPeminjamanSelesai(@RequestParam(required = false) @ApiParam(required = false) Long anggotaId) {
+        return peminjamanService.trackPeminjamanSelesai(anggotaId);
+    }
+
+    @ApiOperation("Track Peminjaman PINJAM")
+    @ApiParamAuth
+    @GetMapping("/trackPeminjamanPinjam")
+    public BaseResponse<?> trackPeminjamanPinjam(@RequestParam(required = false) @ApiParam(required = false) Long anggotaId) {
+        return peminjamanService.trackPeminjamanPinjam(anggotaId);
+    }
+
+    @ApiOperation("Track Peminjaman")
+    @ApiParamAuth
+    @GetMapping("/trackPeminjaman")
+    public BaseResponse<?> trackPeminjaman() {
+        return peminjamanService.trackPeminjaman();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.irsan.sinaukoding;
 
+import com.irsan.sinaukoding.entity.Peminjaman;
 import com.irsan.sinaukoding.repository.PeminjamanRepository;
 import com.irsan.sinaukoding.util.Constant;
 import com.irsan.sinaukoding.util.Helper;
@@ -7,11 +8,14 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 @SpringBootTest
 class PerpusManagementApplicationTests {
@@ -30,7 +34,7 @@ class PerpusManagementApplicationTests {
     @Test
     void countAnggotaId() {
         Long anggotaId = 2L;
-        long getCount = peminjamanRepository.countAnggotaId(anggotaId);
+        long getCount = peminjamanRepository.countAnggotaId(anggotaId, Constant.STATUS_SELESAI);
         System.out.println("Jumlah " + getCount);
     }
 
@@ -38,7 +42,7 @@ class PerpusManagementApplicationTests {
     void countBukuId() {
         Long anggotaId = 2L;
         Long bukuId = 2L;
-        long getCount = peminjamanRepository.countBukuId(anggotaId, bukuId);
+        long getCount = peminjamanRepository.countBukuId(anggotaId, bukuId, Constant.STATUS_SELESAI);
         System.out.println("Jumlah " + getCount);
     }
 

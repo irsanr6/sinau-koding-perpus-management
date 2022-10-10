@@ -8,5 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 public interface PeminjamanService {
     BaseResponse<?> pinjamBuku(PeminjamanSimpanRequest pinjamRequest, HttpServletRequest httpServletRequest);
 
-    BaseResponse<?> updatePinjamBuku(PeminjamanSimpanRequest pinjamRequest);
+    BaseResponse<?> trackPeminjamanSelesai(Long anggotaId);
+
+    BaseResponse<?> trackPeminjamanPinjam(Long anggotaId);
+
+    BaseResponse<?> trackPeminjaman();
 }

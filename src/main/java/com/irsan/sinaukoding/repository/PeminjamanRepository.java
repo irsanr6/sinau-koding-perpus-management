@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface PeminjamanRepository extends JpaRepository<Peminjaman, Long> {
@@ -20,4 +21,7 @@ public interface PeminjamanRepository extends JpaRepository<Peminjaman, Long> {
     @Modifying
     @Query(value = "update peminjaman set status = ?1 where peminjaman_id = ?2", nativeQuery = true)
     void updateStatus(String status, Long peminjamanId);
+
+    @Query(value = "select * from peminjaman where anggota_id = ?1 and status = ?2 order by updated_at desc", nativeQuery = true)
+    List<Peminjaman> findAllByAnggotaIdAndStatus(Long anggotaId, String status);
 }
