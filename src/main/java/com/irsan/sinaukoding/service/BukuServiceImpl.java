@@ -91,7 +91,7 @@ public class BukuServiceImpl implements BukuService {
     }
 
     private static Buku getBuku(BukuSimpanRequest simpanRequest) {
-        Buku buku = Buku.builder()
+        return Buku.builder()
                 .judulBuku(simpanRequest.getJudulBuku())
                 .tahunTerbit(simpanRequest.getTahunTerbit())
                 .jumlah(Long.valueOf(simpanRequest.getJumlah()))
@@ -99,6 +99,5 @@ public class BukuServiceImpl implements BukuService {
                 .pengarangId(Long.valueOf(simpanRequest.getPengarangId()))
                 .penerbitId(Long.valueOf(simpanRequest.getPenerbitId()))
                 .build();
-        return buku;
     }
 }
