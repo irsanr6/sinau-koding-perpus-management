@@ -37,23 +37,31 @@ public class PeminjamanServiceImpl implements PeminjamanService {
         int batasBuku = Constant.BATAS_BUKU;
         int getCountAnggota = peminjamanRepository.countAnggotaId(Long.valueOf(pinjamRequest.getAnggotaId()), Constant.STATUS_PINJAM);
         int getCountBuku = peminjamanRepository.countBukuId(Long.valueOf(pinjamRequest.getAnggotaId()), Long.valueOf(pinjamRequest.getBukuId()), Constant.STATUS_PINJAM);
-        if (getCountAnggota >= batasPeminjaman) {
+        Buku buku = Optional.of(bukuRepository.findById(Long.valueOf(pinjamRequest.getBukuId()))).get().orElseThrow();
+        if (buku.getJumlah() <= 0) {
             pinjamBuku = null;
-            message = "Peminjaman buku lebih dari " + batasPeminjaman + " kali dengan ID Anggota yang sama";
-        } else if (getCountBuku >= batasBuku) {
-            pinjamBuku = null;
-            message = "Peminjaman buku yang sama tidak boleh lebih dari " + batasBuku + " kali";
+            message = "Buku habis, tidak bisa melakukan peminjaman";
         } else {
-            pinjamBuku = peminjamanRepository.save(Peminjaman.builder()
-                    .bukuId(Long.valueOf(pinjamRequest.getBukuId()))
-                    .tglPinjam(Helper.currentDate())
-                    .tglKembali(Helper.dynamicDate(Helper.currentDate(), Constant.LONG_DAYS))
-                    .updatedAt(Helper.currentDate())
-                    .anggotaId(Long.valueOf(pinjamRequest.getAnggotaId()))
-                    .petugasId(userData.getUserId())
-                    .status(Constant.STATUS_PINJAM)
-                    .build());
-            message = "Berhasil melakukan peminjaman";
+            if (getCountAnggota >= batasPeminjaman) {
+                pinjamBuku = null;
+                message = "Peminjaman buku lebih dari " + batasPeminjaman + " kali dengan ID Anggota yang sama";
+            } else if (getCountBuku >= batasBuku) {
+                pinjamBuku = null;
+                message = "Peminjaman buku yang sama tidak boleh lebih dari " + batasBuku + " kali";
+            } else {
+                pinjamBuku = peminjamanRepository.save(Peminjaman.builder()
+                        .bukuId(Long.valueOf(pinjamRequest.getBukuId()))
+                        .tglPinjam(Helper.currentDate())
+                        .tglKembali(Helper.dynamicDate(Helper.currentDate(), Constant.LONG_DAYS))
+                        .updatedAt(Helper.currentDate())
+                        .anggotaId(Long.valueOf(pinjamRequest.getAnggotaId()))
+                        .petugasId(userData.getUserId())
+                        .status(Constant.STATUS_PINJAM)
+                        .build());
+                buku.setJumlah(buku.getJumlah() - 1);
+                bukuRepository.save(buku);
+                message = "Berhasil melakukan peminjaman";
+            }
         }
         return BaseResponse.ok(message, pinjamBuku);
     }

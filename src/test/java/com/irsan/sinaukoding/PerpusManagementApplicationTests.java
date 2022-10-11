@@ -1,6 +1,7 @@
 package com.irsan.sinaukoding;
 
 import com.irsan.sinaukoding.entity.Peminjaman;
+import com.irsan.sinaukoding.repository.BukuRepository;
 import com.irsan.sinaukoding.repository.PeminjamanRepository;
 import com.irsan.sinaukoding.util.Constant;
 import com.irsan.sinaukoding.util.Helper;
@@ -22,6 +23,9 @@ class PerpusManagementApplicationTests {
 
     @Autowired
     private PeminjamanRepository peminjamanRepository;
+
+    @Autowired
+    private BukuRepository bukuRepository;
 
     @Test
     void contextLoads() {
@@ -71,6 +75,17 @@ class PerpusManagementApplicationTests {
         System.out.println(message + " " + denda);
         System.out.println("Interval " + diff);
         System.out.println("After date " + requiredDate + ", current date " + currenDate);
+    }
+
+    @Test
+    void testRepoCustom() {
+        Long bukuId = 1L;
+        Long jumlahBuku = bukuRepository.getJumlahBuku(bukuId);
+        if (jumlahBuku <= 0) {
+            System.out.println("buku habis");
+        } else {
+            System.out.println(jumlahBuku);
+        }
     }
 
 }

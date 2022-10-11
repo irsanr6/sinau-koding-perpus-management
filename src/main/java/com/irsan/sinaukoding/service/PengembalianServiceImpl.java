@@ -1,9 +1,11 @@
 package com.irsan.sinaukoding.service;
 
+import com.irsan.sinaukoding.entity.Buku;
 import com.irsan.sinaukoding.entity.Peminjaman;
 import com.irsan.sinaukoding.entity.Pengembalian;
 import com.irsan.sinaukoding.model.PengembalianSimpanRequest;
 import com.irsan.sinaukoding.model.UserData;
+import com.irsan.sinaukoding.repository.BukuRepository;
 import com.irsan.sinaukoding.repository.PeminjamanRepository;
 import com.irsan.sinaukoding.repository.PengembalianRepository;
 import com.irsan.sinaukoding.util.BaseResponse;
@@ -25,12 +27,16 @@ public class PengembalianServiceImpl implements PengembalianService {
     @Autowired
     private PeminjamanRepository peminjamanRepository;
 
+    @Autowired
+    private BukuRepository bukuRepository;
+
     @Override
     public BaseResponse<?> kembaliBuku(PengembalianSimpanRequest simpanRequest, HttpServletRequest httpServletRequest) {
         UserData userData = SessionUtil.getUserData(httpServletRequest);
         Pengembalian pengembalian = new Pengembalian();
         String message = "";
         Peminjaman peminjaman = Optional.of(peminjamanRepository.findById(Long.valueOf(simpanRequest.getPeminjamanId()))).get().orElseThrow();
+        Buku buku = Optional.of(bukuRepository.findById(peminjaman.getBukuId())).get().orElseThrow();
         String status = peminjaman.getStatus();
         if (status == null) {
             peminjaman.setStatus(Constant.STATUS_PINJAM);
@@ -53,7 +59,8 @@ public class PengembalianServiceImpl implements PengembalianService {
             message = "Status buku " + status + "";
         }
         peminjamanRepository.updateStatus(Constant.STATUS_SELESAI, Long.valueOf(simpanRequest.getPeminjamanId()));
-
+        buku.setJumlah(buku.getJumlah() + 1);
+        bukuRepository.save(buku);
         return BaseResponse.ok(message, pengembalian);
     }
 }
