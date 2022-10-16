@@ -68,19 +68,19 @@ public class PeminjamanServiceImpl implements PeminjamanService {
 
     @Override
     public BaseResponse<?> trackPeminjamanSelesai(Long anggotaId) {
-        MultiValueMap<Long, String> multiValueMap = new LinkedMultiValueMap<>();
-        Map<Long, Object> resMap = new HashMap<>();
-        Set<Long> keySet = new HashSet<>();
+        MultiValueMap<Object, Object> multiValueMap = new LinkedMultiValueMap<>();
+        Map<Object, Object> resMap = new HashMap<>();
+        Set<Object> keySet = new HashSet<>();
         List<Peminjaman> allById = peminjamanRepository.findAllByAnggotaIdAndStatus(anggotaId, Constant.STATUS_SELESAI);
         if (Helper.isNullOrEmpty(allById)) {
             multiValueMap.add(anggotaId, "Buku dengan status SELESAI tidak ada");
         } else {
             for (Peminjaman singleId : allById) {
-                multiValueMap.add(singleId.getAnggotaId(), getNamaBuku(singleId.getBukuId()));
+                multiValueMap.add(singleId.getAnggotaId(), singleId.getBukuId());
             }
             keySet = multiValueMap.keySet();
-            for (Long key : keySet) {
-                resMap.put(key, arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
+            for (Object key : keySet) {
+                resMap.put(key, Helper.arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
             }
         }
         return BaseResponse.ok(resMap);
@@ -88,19 +88,19 @@ public class PeminjamanServiceImpl implements PeminjamanService {
 
     @Override
     public BaseResponse<?> trackPeminjamanPinjam(Long anggotaId) {
-        MultiValueMap<Long, String> multiValueMap = new LinkedMultiValueMap<>();
-        Map<Long, Object> resMap = new HashMap<>();
-        Set<Long> keySet = new HashSet<>();
+        MultiValueMap<Object, Object> multiValueMap = new LinkedMultiValueMap<>();
+        Map<Object, Object> resMap = new HashMap<>();
+        Set<Object> keySet = new HashSet<>();
         List<Peminjaman> allById = peminjamanRepository.findAllByAnggotaIdAndStatus(anggotaId, Constant.STATUS_PINJAM);
         if (Helper.isNullOrEmpty(allById)) {
             multiValueMap.add(anggotaId, "Buku dengan status PINJAM tidak ada");
         } else {
             for (Peminjaman singleId : allById) {
-                multiValueMap.add(singleId.getAnggotaId(), getNamaBuku(singleId.getBukuId()));
+                multiValueMap.add(singleId.getAnggotaId(), singleId.getBukuId());
             }
             keySet = multiValueMap.keySet();
-            for (Long key : keySet) {
-                resMap.put(key, arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
+            for (Object key : keySet) {
+                resMap.put(key, Helper.arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
             }
         }
         return BaseResponse.ok(resMap);
@@ -108,16 +108,16 @@ public class PeminjamanServiceImpl implements PeminjamanService {
 
     @Override
     public BaseResponse<?> trackPeminjaman() {
-        MultiValueMap<Long, String> multiValueMap = new LinkedMultiValueMap<>();
-        Map<Long, Object> resMap = new HashMap<>();
-        Set<Long> keySet = new HashSet<>();
+        MultiValueMap<Object, Object> multiValueMap = new LinkedMultiValueMap<>();
+        Map<Object, Object> resMap = new HashMap<>();
+        Set<Object> keySet = new HashSet<>();
         List<Peminjaman> allPeminjaman = peminjamanRepository.findAll();
         for (Peminjaman singlePeminjaman : allPeminjaman) {
-            multiValueMap.add(singlePeminjaman.getAnggotaId(), getNamaBuku(singlePeminjaman.getBukuId()));
+            multiValueMap.add(singlePeminjaman.getAnggotaId(), singlePeminjaman.getBukuId());
         }
         keySet = multiValueMap.keySet();
-        for (Long key : keySet) {
-            resMap.put(key, arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
+        for (Object key : keySet) {
+            resMap.put(key, Helper.arrayToString(Objects.requireNonNull(multiValueMap.get(key))));
         }
         return BaseResponse.ok(resMap);
     }
@@ -127,8 +127,4 @@ public class PeminjamanServiceImpl implements PeminjamanService {
         return buku.getJudulBuku();
     }
 
-    private String arrayToString(List<String> list) {
-        return list.stream().map(Object::toString)
-                .collect(Collectors.joining(", "));
-    }
 }

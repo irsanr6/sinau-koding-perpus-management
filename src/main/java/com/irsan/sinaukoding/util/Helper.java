@@ -6,6 +6,8 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Helper {
 
@@ -40,6 +42,11 @@ public class Helper {
 
     public static boolean isNullOrEmpty( final Collection< ? > c ) {
         return c == null || c.isEmpty();
+    }
+
+    public static String arrayToString(List<?> list) {
+        return list.stream().map(Object::toString)
+                .collect(Collectors.joining(", "));
     }
 
 }
